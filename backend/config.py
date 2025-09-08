@@ -1,0 +1,5 @@
+SECRET_KEY = "XXXXX"
+ALGORITHM = "XXXXX"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+DATABASE_URL = "mysql+pymysql://root:yourpassword@127.0.0.1:3307/db"
