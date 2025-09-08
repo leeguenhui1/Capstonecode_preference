@@ -15,4 +15,5 @@ app.include_router(calendar.router, prefix="/calendar", tags=["Calendar"])
 
 @app.get("/")
 def root():
-    return {"message": "Welcome to the API"}
+    return {"message": "안녕하세요"}
+
