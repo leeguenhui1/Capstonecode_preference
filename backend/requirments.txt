@@ -1,13 +1,9 @@
 fastapi
 uvicorn
 sqlalchemy
-pymysql
-alembic
 pydantic
-python-dotenv
-bcrypt
-passlib
-gssapi
 python-jose
-python-multipart
-httpyx # (카카오 OAuth 요쳥용)
+passlib[bcrypt]
+bcrypt
+email-validator
+pymysql
