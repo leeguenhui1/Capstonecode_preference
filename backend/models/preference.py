@@ -1,3 +1,7 @@
+"""
+Preference 테이블에 대한 SQLAlchemy 모델을 정의합니다.
+"""
+
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base

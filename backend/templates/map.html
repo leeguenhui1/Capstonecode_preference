@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html> 
+<head>
+    <meta charset="utf-8">
+    <title>공원 및 음식점 위치</title>
+    <style>
+        /* 기본 스타일 */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+        #map-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 2;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        button {
+            margin: 0 5px;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        button:hover {
+            background-color: #f0f0f0;
+        }
+        
+        /* --- 1. 버튼을 초록색으로 만드는 CSS --- */
+        button.active {
+            background-color: #28a745; /* 초록색 배경 */
+            color: white; /* 흰색 글자 */
+            border-color: #28a745;
+            font-weight: bold;
+        }
+
+        /* --- 2. 정보창(인포윈도우) 스타일 --- */
+        .infowindow-content {
+            padding: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            width: auto;
+            min-width: 150px;
+        }
+        .infowindow-content strong {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map-container">
+    <div id="controls">
+        <!-- 3. onclick 이벤트에서 'this'를 넘겨주어, 클릭된 버튼 자신을 함수로 전달합니다. -->
+        <button onclick="loadMarkers('parks', this)">공원</button>
+        <button onclick="loadMarkers('restaurants', this)">음식점</button>
+    </div>
+    <div id="map"></div>
+</div>
+
+<!-- YOUR_APP_KEY 부분은 본인의 키로 채워주세요 -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY"></script>
+<script>
+    // 카카오맵 API 로딩 및 지도 생성
+    kakao.maps.load(function() {
+        try {
+            const mapContainer = document.getElementById('map');
+            if (!mapContainer) {
+                console.error("Map container not found!");
+                return;
+            }
+            const mapOption = {
+                center: new kakao.maps.LatLng(37.566826, 126.9786567),
+                level: 8
+            };
+            window.map = new kakao.maps.Map(mapContainer, mapOption);
+            const zoomControl = new kakao.maps.ZoomControl();
+            window.map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+        } catch (error) {
+            console.error("Failed to create Kakao Map object:", error);
+            alert("지도를 불러오는 데 실패했습니다. API 키 또는 네트워크 연결을 확인하세요.");
+        }
+    });
+
+    let markers = [];
+    let infowindows = [];
+
+    // 4. 함수가 두 번째 인자로 클릭된 버튼(clickedButton)을 받도록 수정합니다.
+    async function loadMarkers(type, clickedButton) {
+        if (!window.map) {
+            alert("지도가 아직 로드되지 않았습니다.");
+            return;
+        }
+
+        // --- 버튼 활성화 로직 ---
+        document.querySelectorAll('#controls button').forEach(btn => btn.classList.remove('active'));
+        if (clickedButton) {
+            clickedButton.classList.add('active');
+        }
+
+        // --- 기존 마커 및 인포윈도우 제거 ---
+        markers.forEach(marker => marker.setMap(null));
+        infowindows.forEach(infowindow => infowindow.close());
+        markers = [];
+        infowindows = [];
+
+        const apiUrl = `/map/${type}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const data = await response.json();
+            if (!data || data.length === 0) {
+                alert('표시할 데이터가 없습니다.');
+                if (clickedButton) clickedButton.classList.remove('active');
+                return;
+            }
+
+            // --- 5. 마커와 인포윈도우를 함께 생성하고 이벤트를 연결하는 로직 ---
+            data.forEach(item => {
+                const marker = new kakao.maps.Marker({
+                    position: new kakao.maps.LatLng(item.lat, item.lng),
+                });
+
+                const content = `
+                    <div class="infowindow-content">
+                        <strong>${item.name}</strong>
+                        전화번호: ${item.tel || '정보 없음'}
+                    </div>`;
+
+                const infowindow = new kakao.maps.InfoWindow({ content: content, disableAutoPan: true });
+
+                kakao.maps.event.addListener(marker, 'mouseover', () => infowindow.open(window.map, marker));
+                kakao.maps.event.addListener(marker, 'mouseout', () => infowindow.close());
+                
+                marker.setMap(window.map);
+                markers.push(marker);
+                infowindows.push(infowindow);
+            });
+
+        } catch (error) {
+            console.error('Error loading markers:', error);
+            alert('마커 데이터를 불러오는 중 오류가 발생했습니다.');
+            if (clickedButton) clickedButton.classList.remove('active');
+        }
+    }
+</script>
+
+</body>
+</html>
+

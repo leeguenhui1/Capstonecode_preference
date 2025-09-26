@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class CalendarEventCreate(BaseModel):
-    date: str  # 'YYYY-MM-DD'
+    date: str
     title: str
 
 
