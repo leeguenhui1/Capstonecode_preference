@@ -4,6 +4,7 @@ OpenAI function calling을 관리하고 외부 함수를 연결합니다.
 사용자 메시지를 분석하여 필요한 함수를 호출하고 결과를 처리합니다.
 """
 import json
+import os
 from common.client import client
 from common import model
 from services.weather_service import get_weather_forecast, get_celsius_temperature
@@ -62,7 +63,23 @@ class FunctionCalling:
         }
 
     def analyze(self, user_message, tools):
+
+        
+
+
         try:
+
+
+            # --- 디버깅 코드 ---
+            print("---" * 20)
+            loaded_key = os.getenv("OPENAI_API_KEY")
+            print(f"현재 코드에서 사용 중인 API 키: [{loaded_key}]")
+            print("---" * 20)
+            # --- 여기까지 --- # <--- 추가 (2/2)
+
+
+
+
             response = client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": user_message}],

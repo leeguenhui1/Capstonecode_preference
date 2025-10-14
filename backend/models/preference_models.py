@@ -15,3 +15,5 @@ class Preference(Base):
     category = Column(String(50), nullable=False)
 
     user = relationship("User", back_populates="preference")
+
+

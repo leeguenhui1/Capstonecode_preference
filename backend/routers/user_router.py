@@ -24,12 +24,24 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login/")
 def login(user: UserLogin, db: Session = Depends(get_db)):
+    # 1. 이메일로 사용자를 찾습니다.
     db_user = db.query(User).filter(User.email == user.email).first()
-    if not db_user or not verify_password(user.password, db_user.hashed_password):
-        raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 올바르지 않습니다.")
-    access_token = create_access_token(data={"sub": db_user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
 
+    # 2. 사용자가 없거나 비밀번호가 틀리면, 401 에러를 발생시킵니다.
+    if not db_user or not verify_password(user.password, db_user.hashed_password):
+        raise HTTPException(
+            status_code=401,
+            detail="이메일 또는 비밀번호가 올바르지 않습니다."
+        )
+
+    # 3. 로그인 성공 시, 사용자 정보를 담은 데이터를 반드시 return 합니다.
+    #    (이 return 구문이 없으면 빈 응답이 갑니다!)
+    return {
+        "message": "로그인 성공!",
+        "user_id": db_user.id,
+        "username": db_user.username,
+        "email": db_user.email
+    }
 
 @router.post("/logout/")
 def logout(token=Depends(bearer_scheme)):

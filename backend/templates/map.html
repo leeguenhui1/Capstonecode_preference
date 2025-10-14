@@ -3,6 +3,14 @@
 <head>
     <meta charset="utf-8">
     <title>공원 및 음식점 위치</title>
+    <!-- Session Check Script: Redirects if not logged in -->
+    <script>
+      if (!localStorage.getItem('smartday_user')) {
+        // FIX: Use an absolute path based on the current location to prevent errors in sandboxed environments.
+        const currentPath = window.location.href;
+        window.location.href = currentPath.substring(0, currentPath.lastIndexOf('/') + 1) + '01.html';
+      }
+    </script>
     <style>
         /* 기본 스타일 */
         html, body {
@@ -42,15 +50,15 @@
             background-color: #f0f0f0;
         }
         
-        /* --- 1. 버튼을 초록색으로 만드는 CSS --- */
+        /* --- 1. Style for the active button --- */
         button.active {
-            background-color: #28a745; /* 초록색 배경 */
-            color: white; /* 흰색 글자 */
+            background-color: #28a745; /* Green background */
+            color: white; /* White text */
             border-color: #28a745;
             font-weight: bold;
         }
 
-        /* --- 2. 정보창(인포윈도우) 스타일 --- */
+        /* --- 2. Style for the infowindow --- */
         .infowindow-content {
             padding: 8px;
             font-size: 13px;
@@ -70,17 +78,17 @@
 
 <div id="map-container">
     <div id="controls">
-        <!-- 3. onclick 이벤트에서 'this'를 넘겨주어, 클릭된 버튼 자신을 함수로 전달합니다. -->
+        <!-- 3. Pass 'this' in the onclick event to pass the button element itself to the function. -->
         <button onclick="loadMarkers('parks', this)">공원</button>
         <button onclick="loadMarkers('restaurants', this)">음식점</button>
     </div>
     <div id="map"></div>
 </div>
 
-<!-- YOUR_APP_KEY 부분은 본인의 키로 채워주세요 -->
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY"></script>
+<!-- Replace YOUR_APP_KEY with your actual key -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7111a7af588ac1a5d9c00696d4fd91e4"></script>
 <script>
-    // 카카오맵 API 로딩 및 지도 생성
+    // Load Kakao Maps API and create the map
     kakao.maps.load(function() {
         try {
             const mapContainer = document.getElementById('map');
@@ -104,20 +112,20 @@
     let markers = [];
     let infowindows = [];
 
-    // 4. 함수가 두 번째 인자로 클릭된 버튼(clickedButton)을 받도록 수정합니다.
+    // 4. Modify the function to accept the clicked button as the second argument.
     async function loadMarkers(type, clickedButton) {
         if (!window.map) {
             alert("지도가 아직 로드되지 않았습니다.");
             return;
         }
 
-        // --- 버튼 활성화 로직 ---
+        // --- Button activation logic ---
         document.querySelectorAll('#controls button').forEach(btn => btn.classList.remove('active'));
         if (clickedButton) {
             clickedButton.classList.add('active');
         }
 
-        // --- 기존 마커 및 인포윈도우 제거 ---
+        // --- Remove existing markers and infowindows ---
         markers.forEach(marker => marker.setMap(null));
         infowindows.forEach(infowindow => infowindow.close());
         markers = [];
@@ -136,7 +144,7 @@
                 return;
             }
 
-            // --- 5. 마커와 인포윈도우를 함께 생성하고 이벤트를 연결하는 로직 ---
+            // --- 5. Logic to create markers and infowindows together and link events ---
             data.forEach(item => {
                 const marker = new kakao.maps.Marker({
                     position: new kakao.maps.LatLng(item.lat, item.lng),

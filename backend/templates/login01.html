@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="/static/css/01.css">
+</head>
+<body>
+
+    <div class="form signup">
+        <div class="form-header">
+            <div class="show-signup">Sign Up</div>
+            <div class="show-signin">Sign In</div>
+            <!-- Reset 버튼을 HTML 구조에서 완전히 삭제했습니다. -->
+        </div>
+        <div class="arrow"></div>
+        <form class="form-elements" id="login-form">
+            <div class="form-element">
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="form-element">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="form-element">
+                <input type="text" name="username" placeholder="Username">
+            </div>
+            <div class="form-element">
+                <button type="submit" id="submit-btn">Sign Up</button>
+            </div>
+            <!-- === 카카오 로그인 버튼 추가 === -->
+            <div class="form-element">
+                <!-- form의 submit을 방지하기 위해 type="button"을 추가합니다. -->
+                <button type="button" id="kakao-login-btn">kakao</button>
+            </div>
+
+
+        </form>
+        <div class="message-box" id="message-box"></div>
+    </div>
+
+    <script src="/static/js/login01.js"></script>
+</body>
+</html>

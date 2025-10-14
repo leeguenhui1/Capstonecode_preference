@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Day Chatbot</title>
+
+    <script>
+      // 페이지가 로드되자마자 이 코드가 즉시 실행됩니다.
+      (function(){
+        // 브라우저 저장소(localStorage)에서 'smartday_user' 정보가 있는지 확인합니다.
+        const user = localStorage.getItem('smartday_user');
+        
+        // 만약 사용자 정보가 없다면,
+        if (!user) {
+          // 즉시 로그인 페이지로 이동시킵니다.
+          window.location.href = '/login';
+        }
+      })();
+    </script>
+
+    <!-- 분리된 CSS 파일 연결 -->
+    <link rel="stylesheet" href="/static/css/chatbotpage.css">
+</head>
+<body>
+    <!-- =================================================================
+       전체 앱 레이아웃
+       ================================================================= -->
+    <div id="app-layout">
+        
+        <!-- =================================================================
+           사이드바 (Sidebar)
+           ================================================================= -->
+        <aside id="sidebar" class="collapsed">
+            <!-- 사이드바 헤더 -->
+            <div id="sidebar-header">
+                <h2><span class="menu-text">Menu</span></h2>
+            </div>
+
+            <!-- 네비게이션 메뉴 -->
+            <nav>
+                <a id="nav-chat" class="active"><span class="menu-icon">💬</span><span class="menu-text">채팅하기</span></a>
+                <a id="nav-map"><span class="menu-icon">🗺️</span><span class="menu-text">지도 보기</span></a>
+            </nav>
+            
+            <!-- 지도 표시 영역 (처음에는 숨겨짐) -->
+            <div id="sidebar-map-container" class="hidden">
+                <div id="sidebar-map"></div>
+                <div id="sidebar-map-controls">
+                    <button onclick="loadSidebarMapMarkers('parks', this)">공원</button>
+                    <button onclick="loadSidebarMapMarkers('restaurants', this)">음식점</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- =================================================================
+           메인 콘텐츠 (Main Content)
+           ================================================================= -->
+        <div id="main-content">
+            <!-- 상단바 (Topbar) -->
+            <header id="topbar">
+                <button id="menu-toggle-btn" title="Toggle Menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4H21V6H3V4ZM3 11H21V13H3V11ZM3 18H21V20H3V18Z"></path></svg>
+                </button>
+                <div id="logo">SMART DAY</div>
+                <div id="user-box">
+                    <div id="user-avatar">U</div>
+                    <div id="user-name">Username</div>
+                    <div id="user-menu" class="hidden">
+                        <button id="logout-btn">로그아웃</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 채팅 영역 (Chat Wrapper) -->
+            <main id="chat-wrapper">
+                <div id="chat-container">
+                    <!-- 메시지 표시창 -->
+                    <div id="chat-box">
+                        <div class="message bot-message">
+                            <p>안녕하세요! SMART DAY 챗봇입니다. 어떤 하루를 계획하고 싶으신가요?</p>
+                        </div>
+                    </div>
+
+                    <!-- 선호도 선택 버튼 -->
+                    <div class="category-buttons">
+                        <button class="category-button" data-category="쇼핑">#쇼핑</button>
+                        <button class="category-button" data-category="관광지">#관광지</button>
+                        <button class="category-button" data-category="문화시설">#문화시설</button>
+                        <button class="category-button" data-category="공원">#공원</button>
+                    </div>
+                    <div id="preference-controls">
+                        <span id="preference-status"></span>
+                        <button id="save-preference-btn">선호도 저장</button>
+                    </div>
+
+                    <!-- 메시지 입력 폼 -->
+                    <form id="input-form" onsubmit="sendMessage(event)">
+                        <input type="text" id="message-input" placeholder="메시지를 입력하세요..." autocomplete="off">
+                        <button type="submit" id="send-button">전송</button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 카카오맵 API 스크립트 -->
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7111a7af588ac1a5d9c00696d4fd91e4"></script>
+    
+    <!-- 분리된 JavaScript 파일 연결 -->
+    <script src="/static/js/chatbotpage.js"></script>
+</body>
+</html>

@@ -5,7 +5,7 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from typing import List
-from schemas.map import Location
+from schemas.map_schema import Location
 from services import map_service
 
 router = APIRouter()

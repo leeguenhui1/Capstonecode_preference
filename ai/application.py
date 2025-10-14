@@ -8,6 +8,7 @@ FastAPI 웹 서버의 메인 파일
 import sys
 from common import model
 from chatbot import Chatbot
+# 수정해야할거 같음 : Import "chatbot" could not be resolved
 from characters import system_role, instruction
 from function_calling import FunctionCalling, tools
 from constants import seoul_keywords, gyeonggi_keywords
@@ -90,6 +91,7 @@ async def chat_api(request: Request):
         # 챗봇의 추천 코스 답변을 받아와서 한 문장으로 연결
         course_str = smartbot.get_response_content()
         response_message = f"{weather_str}{course_str}"
+        # 여기서 활성화가 안된 부분 : add_user_message() , send_request() , add_response()  , get_reponse_content()
     else:
         smartbot.add_user_message(request_message)
         analyzed, analyzed_dict = func_calling.analyze(request_message, tools)
@@ -117,7 +119,14 @@ async def chat_api(request: Request):
             smartbot.add_response(response)
             response_message = smartbot.get_response_content()
     smartbot.handle_token_limit(response)  # 토큰한도 처리함수 호출
+
+    # 활성화 안된 부분 : handle_token_limit()
+
     smartbot.clean_context()  # 인스트럭션 지우기
+
+    # 활성화 안된 부분 : clean_context()
+
+
     print("response_message:", response_message)
     return JSONResponse(content={"response_message": response_message})
 

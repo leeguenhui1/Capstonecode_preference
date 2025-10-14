@@ -29,7 +29,9 @@ def load_json_data(file_path: str, name_key: str, lat_key: str, lng_key: str, te
             lat_val = item.get(lat_key)
             lng_val = item.get(lng_key)
 
-            if all(k in item for k in [name_key, lat_key, lng_key]) and lat_val and lng_val:
+           # if all(k in item for k in [name_key, lat_key, lng_key]) and lat_val and lng_val:
+             # lat_val과 lng_val에 대한 검사를 제거합니다.
+            if all(k in item for k in [name_key, lat_key, lng_key]):
                 try:
                     # 'tel' 필드를 표준 형식에 추가합니다.
                     processed_data.append({
