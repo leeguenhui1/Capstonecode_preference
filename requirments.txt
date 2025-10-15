@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+pymysql
+python-dotenv
+openai
+tiktoken
+requests
+pytz
+python-jose[cryptography]
+bcrypt
+pydantic
+pydantic-settings
+passlib[bcrypt]
+bcrypt
